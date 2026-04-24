@@ -31,12 +31,12 @@ export default function handler(req, res) {
 
     res.setHeader('Set-Cookie', [cookieOptions, nonceCookieOptions]);
 
-    // Build authorization URL
+    // Build authorization URL (Thêm scope email theo tài liệu)
     const params = new URLSearchParams({
         response_type: 'code',
         client_id: process.env.GHN_SSO_CLIENT_ID,
         redirect_uri: process.env.GHN_SSO_REDIRECT_URI,
-        scope: 'openid profile',
+        scope: 'openid profile email',
         state,
         nonce,
     });

@@ -125,7 +125,6 @@ export default function GHNEESMiniApp() {
     }
   }, [ssoError]);
 
-  // States: 'home', 'open_info', 'embed', 'closed_info', 'upcoming_info'
   const [view, setView] = useState('home');
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -153,7 +152,7 @@ export default function GHNEESMiniApp() {
   if (!authenticated) return <LoginScreen onLogin={login} ssoError={ssoError} />;
 
   // ----------------------------------------------------------------
-  // Survey config (giữ nguyên như cũ)
+  // Survey config (Đã thêm +07:00 để fix lỗi timezone)
   // ----------------------------------------------------------------
   const surveyGroupsConfig = [
     {
@@ -163,8 +162,8 @@ export default function GHNEESMiniApp() {
       icon: <Bike size={24} />,
       formUrl: 'https://daotao.ghn.vn/survey/1A',
       embedUrl: '',
-      startTime: '2026-04-25T00:00:00',
-      endTime: '2026-05-20T00:00:00',
+      startTime: '2026-04-25T00:00:00+07:00',
+      endTime: '2026-05-20T00:00:00+07:00',
     },
     {
       id: '1B',
@@ -173,8 +172,8 @@ export default function GHNEESMiniApp() {
       icon: <Truck size={24} />,
       formUrl: 'https://daotao.ghn.vn/survey/1B',
       embedUrl: '',
-      startTime: '2026-05-12T00:00:00',
-      endTime: '2026-05-20T00:00:00',
+      startTime: '2026-05-12T00:00:00+07:00',
+      endTime: '2026-05-20T00:00:00+07:00',
     },
     {
       id: '2A',
@@ -183,8 +182,8 @@ export default function GHNEESMiniApp() {
       icon: <Package size={24} />,
       formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdNquwHFPrrZ_ZzVLJN9PIwaQCSAXf0rxFCze8rYTRsbSdOUQ/viewform',
       embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdNquwHFPrrZ_ZzVLJN9PIwaQCSAXf0rxFCze8rYTRsbSdOUQ/viewform?embedded=true',
-      startTime: '2026-05-12T00:00:00',
-      endTime: '2026-05-20T00:00:00',
+      startTime: '2026-05-12T00:00:00+07:00',
+      endTime: '2026-05-20T00:00:00+07:00',
     },
     {
       id: '2B',
@@ -194,8 +193,8 @@ export default function GHNEESMiniApp() {
       formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfEYvS_ENT42nPUVnCrzGL6NDjIdjJMaqoBIRmlng4XruMYMA/viewform',
       embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfEYvS_ENT42nPUVnCrzGL6NDjIdjJMaqoBIRmlng4XruMYMA/viewform?embedded=true',
       embedHeight: 9716,
-      startTime: '2026-05-02T00:00:00',
-      endTime: '2026-05-05T00:00:00',
+      startTime: '2026-05-02T00:00:00+07:00',
+      endTime: '2026-05-05T00:00:00+07:00',
     },
     {
       id: '3A',
@@ -205,8 +204,8 @@ export default function GHNEESMiniApp() {
       formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSef_Rzp4IHUkfBKM6S5ys044twbQKThoYQEZDVoGqsDaIEtcA/viewform',
       embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSef_Rzp4IHUkfBKM6S5ys044twbQKThoYQEZDVoGqsDaIEtcA/viewform?embedded=true',
       embedHeight: 10108,
-      startTime: '2026-05-06T00:00:00',
-      endTime: '2026-05-11T00:00:00',
+      startTime: '2026-05-06T00:00:00+07:00',
+      endTime: '2026-05-11T00:00:00+07:00',
     },
     {
       id: '3B',
@@ -216,8 +215,8 @@ export default function GHNEESMiniApp() {
       formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfd-dTMyzLNXiPXom6UXPtQ2T9SsM1EVmKNsZmnNW46gXIzfg/viewform',
       embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfd-dTMyzLNXiPXom6UXPtQ2T9SsM1EVmKNsZmnNW46gXIzfg/viewform?embedded=true',
       embedHeight: 10164,
-      startTime: '2026-05-06T00:00:00',
-      endTime: '2026-05-11T00:00:00',
+      startTime: '2026-05-06T00:00:00+07:00',
+      endTime: '2026-05-11T00:00:00+07:00',
     },
   ];
 
@@ -286,7 +285,6 @@ export default function GHNEESMiniApp() {
 
   const handleStartSurvey = () => {
     if (!selectedGroup) return;
-    // Nhóm 1A, 1B: navigate trực tiếp — cookie *.ghn.vn sẽ được gửi tự động
     if (selectedGroup.id === '1A' || selectedGroup.id === '1B') {
       window.location.href = selectedGroup.formUrl;
       return;
@@ -313,7 +311,7 @@ export default function GHNEESMiniApp() {
       } catch {
         // CORS = iframe loaded OK
       }
-    }, 3000);
+    }, 6000); // Tăng lên 6s chờ Iframe theo góp ý
   }, []);
 
   const handleOpenFormInPlace = () => {
@@ -326,9 +324,6 @@ export default function GHNEESMiniApp() {
     }
   };
 
-  // ----------------------------------------------------------------
-  // Header component (với user info)
-  // ----------------------------------------------------------------
   const Header = ({ title, showBack = true, onBack }) => (
     <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 h-14 flex items-center justify-center shadow-sm w-full transition-all">
       <div className="w-full max-w-[1200px] flex items-center px-4 lg:px-8">
@@ -340,7 +335,6 @@ export default function GHNEESMiniApp() {
           )}
         </div>
         <h1 className="flex-1 text-[17px] font-bold text-gray-800 truncate px-2 tracking-tight text-center">{title}</h1>
-        {/* User avatar + logout */}
         <div className="w-10 shrink-0 flex justify-end">
           <button
             onClick={logout}
@@ -354,20 +348,15 @@ export default function GHNEESMiniApp() {
     </div>
   );
 
-  // ================================================================
-  // VIEWS (giữ nguyên hoàn toàn như bản gốc, chỉ thêm greeting user)
-  // ================================================================
   return (
     <div className={`min-h-screen bg-[#F8FAFC] flex flex-col font-sans w-full transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
 
-      {/* VIEW 1: HOME */}
       {view === 'home' && (
         <>
           <Header title="BẠN NÓI, GHN NGHE 2026" showBack={false} />
           <div className="flex-1 overflow-y-auto w-full pb-16">
             <div className="max-w-[1200px] mx-auto w-full">
 
-              {/* Hero Banner */}
               <div className="text-white px-6 pt-8 pb-16 md:px-14 md:pt-10 md:pb-24 rounded-b-[2.5rem] md:rounded-b-[4rem] shadow-lg relative overflow-hidden mx-auto flex flex-col items-center text-center" style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 40%, #c2410c 100%)' }}>
                 <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
                 <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-white/5 pointer-events-none" />
@@ -391,7 +380,6 @@ export default function GHNEESMiniApp() {
                   <span className="text-orange-100">GHN NGHE</span>
                 </h1>
 
-                {/* Greeting user nếu có tên */}
                 {user?.name && (
                   <p className="relative z-10 text-white/80 text-sm font-medium mb-3 bg-white/10 px-4 py-1.5 rounded-full">
                     Xin chào, <strong className="text-white">{user.name}</strong> 👋
@@ -494,7 +482,6 @@ export default function GHNEESMiniApp() {
                   })}
                 </div>
 
-                {/* Logout button ở cuối trang */}
                 <div className="flex justify-center mt-12">
                   <button
                     onClick={logout}
@@ -509,7 +496,6 @@ export default function GHNEESMiniApp() {
         </>
       )}
 
-      {/* VIEW 2: ĐANG MỞ */}
       {view === 'open_info' && selectedGroup?.status === 'OPEN' && (
         <>
           <Header title="Chuẩn bị khảo sát" onBack={() => changeView('home')} />
@@ -549,7 +535,6 @@ export default function GHNEESMiniApp() {
         </>
       )}
 
-      {/* VIEW 3: IFRAME */}
       {view === 'embed' && selectedGroup?.status === 'OPEN' && selectedGroup?.embedUrl && (
         <>
           <Header title={selectedGroup.title} onBack={() => changeView('open_info', selectedGroup)} />
@@ -609,7 +594,6 @@ export default function GHNEESMiniApp() {
         </>
       )}
 
-      {/* VIEW 4: ĐÃ ĐÓNG */}
       {view === 'closed_info' && selectedGroup?.status === 'CLOSED' && (
         <>
           <Header title="Khảo sát đã đóng" onBack={() => changeView('home')} />
@@ -634,7 +618,6 @@ export default function GHNEESMiniApp() {
         </>
       )}
 
-      {/* VIEW 5: CHƯA MỞ */}
       {view === 'upcoming_info' && selectedGroup?.status === 'UPCOMING' && (
         <>
           <Header title="Khảo sát sắp mở" onBack={() => changeView('home')} />
